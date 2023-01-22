@@ -1,5 +1,7 @@
 package com.gridnine.testing;
 
+import com.gridnine.testing.exception.SegmentException;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -7,12 +9,10 @@ import java.util.List;
 //вылет до текущего момента времени
 public class DepartingInThePastFlightFilter implements FlightFilter {
     @Override
-    public boolean flightFilter(Flight flight) {
+    public boolean filter(Flight flight) {
         List<Segment> segments = flight.getSegments();
         if(segments.isEmpty())
-            return false;
-        if(segments.get(0).getDepartureDate().compareTo(LocalDateTime.now())<0)
-            return true;
-        return false;
+            throw new SegmentException("Flight does not have any segment");
+        return !(segments.get(0).getDepartureDate().compareTo(LocalDateTime.now())<0);
     }
 }
